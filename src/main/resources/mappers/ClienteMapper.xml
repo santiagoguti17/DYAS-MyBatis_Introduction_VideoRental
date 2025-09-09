@@ -1,10 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.ClienteMapper">
 
+    <!-- Consultar clientes sin traer datos de Items rentados (esto lo carga el collection) -->
+    <select parameterType="map" id="consultarClientes" resultMap="ClienteResult">
+        SELECT DISTINCT
+            c.documento AS c_documento,
+            c.nombre AS c_nombre,
+            c.telefono AS c_telefono,
+            c.direccion AS c_direccion,
+            c.email AS c_email,
+            c.vetado AS c_vetado
+        FROM VI_CLIENTES c
+    </select>
+    <!-- Consultar un cliente por ID -->
+    <select id="consultarCliente" parameterType="map" resultMap="ClienteResult">
+        SELECT DISTINCT
+            c.documento AS c_documento,
+            c.nombre AS c_nombre,
+            c.telefono AS c_telefono,
+            c.direccion AS c_direccion,
+            c.email AS c_email,
+            c.vetado AS c_vetado
+        FROM VI_CLIENTES c
+        WHERE c.documento = #{idcli}
+    </select>
 
-          	
+
+    <!-- Mapeo de Cliente -->
+    <resultMap type="Cliente" id="ClienteResult">
+        <id property="documento" column="c_documento"/>
+        <result property="nombre" column="c_nombre"/>
+        <result property="telefono" column="c_telefono"/>
+        <result property="direccion" column="c_direccion"/>
+        <result property="email" column="c_email"/>
+        <result property="vetado" column="c_vetado"/>
+
+        <!-- Cargar los Items Rentados usando el mapper de ItemRentado -->
+        <collection property="rentados" ofType="ItemRentado"
+                    select="edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.ItemRentadoMapper.consultarItemsRentadosPorCliente"
+                    column="c_documento"/>
+    </resultMap>
+
 </mapper>
