@@ -5,6 +5,48 @@
   
 <mapper namespace="edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.ItemMapper">
 
+    <resultMap id="ItemResult" type="Item">
+        <id column="i_id" property="id"/>
+        <result column="i_nombre" property="nombre"/>
+        <result column="i_descripcion" property="descripcion"/>
+        <result column="i_fechalanzamiento" property="fechaLanzamiento"/>
+        <result column="i_tarifaxdia" property="tarifaDia"/>
+        <result column="i_formatorenta" property="formatoRenta"/>
+        <result column="i_genero" property="genero"/>
+
+        <!-- Asociación con TipoItem -->
+        <association property="tipoItem" javaType="TipoItem"
+                     select="edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.TipoItemMapper.getTipoItem"
+                     column="ti_id"/>
+    </resultMap>
+
+    <select id="consultarItem" resultMap="ItemResult">
+        SELECT i.id AS i_id, i.nombre AS i_nombre, i.descripcion AS i_descripcion,
+               strftime('%Y-%m-%d %H:%M:%S', i.fechalanzamiento) AS i_fechalanzamiento, i.tarifaxdia AS i_tarifaxdia,
+               i.formatorenta AS i_formatorenta, i.genero AS i_genero, ti.id AS ti_id
+        FROM VI_ITEMS i
+                 JOIN VI_TIPOITEM ti ON i.TIPOITEM_id = ti.id
+        WHERE i.id = #{id}
+    </select>
+
+    <insert id="insertarItem" parameterType="map">
+        INSERT INTO VI_ITEMS (id, nombre, descripcion, fechalanzamiento, tarifaxdia, formatorenta, genero, TIPOITEM_id)
+        VALUES (#{item.id}, #{item.nombre}, #{item.descripcion}, strftime('%Y-%m-%d', #{item.fechaLanzamiento}),
+                #{item.tarifaxDia}, #{item.formatoRenta}, #{item.genero}, #{item.tipo.id});
+    </insert>
+    <select id="consultarItems" resultMap="ItemResult">
+        SELECT i.id AS i_id,
+               i.nombre AS i_nombre,
+               i.descripcion AS i_descripcion,
+               i.fechalanzamiento AS i_fechalanzamiento,
+               i.tarifaxdia AS i_tarifaxdia,
+               i.formatorenta AS i_formatorenta,
+               i.genero AS i_genero,
+               ti.id AS ti_id,
+               ti.descripcion AS ti_descripcion
+        FROM VI_ITEMS i
+                 INNER JOIN VI_TIPOITEM ti ON i.TIPOITEM_id = ti.id;
+    </select>
 
     
     
