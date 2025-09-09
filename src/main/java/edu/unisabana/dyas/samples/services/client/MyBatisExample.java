@@ -20,7 +20,17 @@ package edu.unisabana.dyas.samples.services.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.util.List;
+
+import edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.ClienteMapper;
+import edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.ItemMapper;
+import edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.ItemRentadoMapper;
+import edu.unisabana.dyas.samples.entities.Cliente;
+import edu.unisabana.dyas.samples.entities.Item;
+import edu.unisabana.dyas.samples.entities.TipoItem;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -61,14 +71,46 @@ public class MyBatisExample {
         SqlSessionFactory sessionfact = getSqlSessionFactory();
 
         SqlSession sqlss = sessionfact.openSession();
+        ClienteMapper cm=sqlss.getMapper(ClienteMapper.class);
+        ItemRentadoMapper irm=sqlss.getMapper(ItemRentadoMapper.class);
+        ItemMapper im=sqlss.getMapper(ItemMapper.class);
 
-        
-        //Crear el mapper y usarlo: 
-        //ClienteMapper cm=sqlss.getMapper(ClienteMapper.class)
-        //cm...
-        
-        
-        
+
+      //AGREGAR ITEM RENTADO A CLIENTE
+        System.out.println("Agregando item (1) rentado a cliente con id 987654321");
+        int idItemRentado=4;
+        int idCliente = 987654321;  // Reemplaza con un ID real
+        int idItem = 1;     // Reemplaza con un ID real
+        String fechaInicio = "2024-03-08";
+        String fechaFin = "2024-03-15";
+        irm.agregarItemRentadoACliente(idItemRentado,idCliente, idItem, fechaInicio, fechaFin);
+        // AGREGAR ITEM
+        System.out.println("Insertando un nuevo item (Pelicula)...");
+        Item nuevoItem = new Item(new TipoItem(1, "Película"), 10, "Matrix", "Ciencia ficción",
+                "2025-08-03", 5000, "Digital", "Sci-Fi");
+
+        im.insertarItem(nuevoItem);
+
+        // CONSULTAR ITEM
+        System.out.println("Consultando item con id 1");
+        Item item = im.consultarItem(1);
+        System.out.println("Item consultado: " + item);
+        //CONSULTAR ITEMS
+        System.out.println("Consultando todos los items");
+        List<Item> items = im.consultarItems();
+        for (Item it : items) {
+            System.out.println(it);
+        }
+
+        //CONSULTAR CLIENTE
+        System.out.println("Consultando cliente con id 987654321");
+        System.out.println(cm.consultarCliente(987654321));
+
+        //CONSULTAR CLIENTES
+        System.out.println("Consultando todos los clientes");
+        System.out.println(cm.consultarClientes());
+
+
         sqlss.commit();
         
         

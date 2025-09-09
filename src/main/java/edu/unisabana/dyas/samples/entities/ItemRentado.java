@@ -46,19 +46,19 @@ public class ItemRentado implements Serializable {
         this.item = item;
     }
 
-    public Date getFechainiciorenta() {
+    public Date getfechaInicioRenta() {
         return fechainiciorenta;
     }
 
-    public void setFechainiciorenta(Date fechainiciorenta) {
+    public void setfechaInicioRenta(Date fechainiciorenta) {
         this.fechainiciorenta = fechainiciorenta;
     }
 
-    public Date getFechafinrenta() {
+    public Date getfechaFinRenta() {
         return fechafinrenta;
     }
 
-    public void setFechafinrenta(Date fechafinrenta) {
+    public void setfechaFinRenta(Date fechafinrenta) {
         this.fechafinrenta = fechafinrenta;
     }
 
