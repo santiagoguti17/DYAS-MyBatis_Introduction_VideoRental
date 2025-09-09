@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.ItemRentadoMapper">
+
+    <resultMap id="ItemRentadoResult" type="ItemRentado">
+        <id column="ir_id" property="id"/>
+        <result column="ir_fechainiciorenta" property="fechaInicioRenta" />
+        <result column="ir_fechafinrenta" property="fechaFinRenta"/>
+
+        <!-- Asociación con Item, usando su mapper -->
+        <association property="item" javaType="Item"
+                     select="edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.ItemMapper.consultarItem"
+                     column="i_id"/>
+    </resultMap>
+
+    <select id="consultarItemsRentadosPorCliente" resultMap="ItemRentadoResult">
+        SELECT ir.id AS ir_id, strftime('%Y-%m-%d %H:%M:%S', ir.fechainiciorenta) AS ir_fechainiciorenta, strftime('%Y-%m-%d %H:%M:%S', ir.fechafinrenta) AS ir_fechafinrenta,
+               i.id AS i_id
+        FROM VI_ITEMRENTADO ir
+                 JOIN VI_ITEMS i ON ir.ITEMS_id = i.id
+        WHERE ir.CLIENTES_documento = #{clienteId}
+    </select>
+
+    <insert id="agregarItemRentadoACliente" parameterType="map">
+        INSERT INTO VI_ITEMRENTADO (id, CLIENTES_documento, ITEMS_id, fechainiciorenta, fechafinrenta)
+        VALUES (#{id}, #{idcli}, #{iditem}, strftime('%Y-%m-%d', #{fechaInicio}), strftime('%Y-%m-%d', #{fechaFin}))
+    </insert>
+
+
+
+
+</mapper>
